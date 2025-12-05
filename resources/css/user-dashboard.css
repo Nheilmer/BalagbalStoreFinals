@@ -5,6 +5,25 @@
     box-sizing: border-box;
 }
 
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-logout {
+    padding: 8px 15px;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}
+
 .user-dashboard {
     padding: 40px;
     background-color: #f5f7fa;
@@ -29,6 +48,18 @@
     font-weight: 700;
 }
 
+.user-info {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
 .btn-profile {
     padding: 12px 24px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -45,6 +76,24 @@
 .btn-profile:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-logout {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
 }
 
 .stats-grid {

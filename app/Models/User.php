@@ -20,8 +20,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -47,13 +49,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
-    }
-
-    public function role(): BelongsTo
+    public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
     }
 }

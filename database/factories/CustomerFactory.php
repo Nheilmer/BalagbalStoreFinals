@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,9 +18,10 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
-            'username' => $this->faker->unique()->userName(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'password_hash' => bcrypt('password'),
+            // 'username' => $this->faker->unique()->userName(),
+            // 'email' => $this->faker->unique()->safeEmail(),
+            // 'password_hash' => bcrypt('password'),
+            'user_id' => User::factory(), // automatically create a linked User
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'date_of_birth' => $this->faker->date(),

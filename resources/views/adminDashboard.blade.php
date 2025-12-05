@@ -45,84 +45,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>john_doe</td>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>john@example.com</td>
-                                <td>555-0101</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(1, 'John', 'Doe', 'john_doe', 'john@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(1, 'John Doe', 5, 1500.50)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(1)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>jane_smith</td>
-                                <td>Jane</td>
-                                <td>Smith</td>
-                                <td>jane@example.com</td>
-                                <td>555-0102</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(2, 'Jane', 'Smith', 'jane_smith', 'jane@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(2, 'Jane Smith', 8, 3200.75)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(2)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>alex_wilson</td>
-                                <td>Alex</td>
-                                <td>Wilson</td>
-                                <td>alex@example.com</td>
-                                <td>555-0103</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(3, 'Alex', 'Wilson', 'alex_wilson', 'alex@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(3, 'Alex Wilson', 3, 850.25)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(3)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>maria_garcia</td>
-                                <td>Maria</td>
-                                <td>Garcia</td>
-                                <td>maria@example.com</td>
-                                <td>555-0104</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(4, 'Maria', 'Garcia', 'maria_garcia', 'maria@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(4, 'Maria Garcia', 12, 5420.00)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(4)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>robert_brown</td>
-                                <td>Robert</td>
-                                <td>Brown</td>
-                                <td>robert@example.com</td>
-                                <td>555-0105</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(5, 'Robert', 'Brown', 'robert_brown', 'robert@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(5, 'Robert Brown', 6, 2150.80)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(5)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>sarah_martin</td>
-                                <td>Sarah</td>
-                                <td>Martin</td>
-                                <td>sarah@example.com</td>
-                                <td>555-0106</td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(6, 'Sarah', 'Martin', 'sarah_martin', 'sarah@example.com')">✏️ Edit</button>
-                                    <button class="btn-action btn-history" onclick="openHistoryModal(6, 'Sarah Martin', 9, 4350.40)">📊 History</button>
-                                    <button class="btn-action btn-delete" onclick="deleteUser(6)">🗑️ Delete</button>
-                                </td>
-                            </tr>
+                            @forelse($customers as $customer)
+                                <tr>
+                                    <td>{{ $customer->id }}</td>
+                                    <td>{{ $customer->user->username ?? 'N/A' }}</td>
+                                    <td>{{ $customer->first_name }}</td>
+                                    <td>{{ $customer->last_name }}</td>
+                                    <td>{{ $customer->user->email ?? 'N/A' }}</td>
+                                    <td>{{ $customer->phone_number ?? 'N/A' }}</td>
+                                    <td>
+                                        <button class="btn-action btn-edit" onclick="openEditModal({{ $customer->id }}, '{{ $customer->first_name }}', '{{ $customer->last_name }}', '{{ $customer->username }}', '{{ $customer->email }}')">✏️ Edit</button>
+                                        <button class="btn-action btn-history" onclick="openHistoryModal({{ $customer->id }}, '{{ $customer->first_name }} {{ $customer->last_name }}', {{ $customer->orders->count() }}, {{ $customer->orders->sum('total_amount') }})">📊 History</button>
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete this customer?')">🗑️ Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">No customers found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -148,83 +93,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Wireless Headphones</td>
-                                <td>High-quality sound with noise cancellation</td>
-                                <td>$79.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(1, 'Wireless Headphones', 'High-quality sound with noise cancellation', 79.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(1)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>USB-C Cable</td>
-                                <td>Durable charging cable, 6ft length</td>
-                                <td>$12.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(2, 'USB-C Cable', 'Durable charging cable, 6ft length', 12.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(2)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Mechanical Keyboard</td>
-                                <td>RGB backlit, mechanical switches, perfect for gaming</td>
-                                <td>$149.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(3, 'Mechanical Keyboard', 'RGB backlit, mechanical switches, perfect for gaming', 149.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(3)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Wireless Mouse</td>
-                                <td>Ergonomic design, 2.4GHz wireless, long battery life</td>
-                                <td>$34.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(4, 'Wireless Mouse', 'Ergonomic design, 2.4GHz wireless, long battery life', 34.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(4)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>4K Monitor</td>
-                                <td>27-inch, 4K resolution, 60Hz refresh rate</td>
-                                <td>$399.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(5, '4K Monitor', '27-inch, 4K resolution, 60Hz refresh rate', 399.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(5)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Laptop Stand</td>
-                                <td>Aluminum construction, adjustable height, portable</td>
-                                <td>$45.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(6, 'Laptop Stand', 'Aluminum construction, adjustable height, portable', 45.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(6)">🗑️ Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>Webcam</td>
-                                <td>1080p HD, built-in microphone, auto focus</td>
-                                <td>$59.99</td>
-                                <td><span class="badge-image">📷</span></td>
-                                <td>
-                                    <button class="btn-action btn-edit" onclick="openEditProductModal(7, 'Webcam', '1080p HD, built-in microphone, auto focus', 59.99)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct(7)">🗑️ Delete</button>
-                                </td>
-                            </tr>
+                            @forelse($products as $product)
+                                <tr>
+                                    <td>{{ $product->id }}</td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ Str::limit($product->description, 50) }}</td>
+                                    <td>${{ number_format($product->unit_price, 2) }}</td>
+                                    <td><span class="badge-image">📷</span></td>
+                                    <td>
+                                        <button class="btn-action btn-edit" onclick="openEditProductModal({{ $product->id }}, '{{ $product->name }}', '{{ $product->description }}', {{ $product->unit_price }}, {{ $product->cost_price }}, {{ $product->category_id }})">✏️ Edit</button>
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete this product?')">🗑️ Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">No products found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -236,23 +125,25 @@
     <div id="editUserModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editUserModal')">&times;</span>
-            <h2>Edit User</h2>
-            <form>
+            <h2>Edit Customer</h2>
+            <form id="editUserForm" method="POST">
+                @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label for="editFirstName">First Name</label>
-                    <input type="text" id="editFirstName" name="editFirstName" required>
+                    <input type="text" id="editFirstName" name="first_name" required>
                 </div>
                 <div class="form-group">
                     <label for="editLastName">Last Name</label>
-                    <input type="text" id="editLastName" name="editLastName" required>
+                    <input type="text" id="editLastName" name="last_name" required>
                 </div>
                 <div class="form-group">
                     <label for="editUsername">Username</label>
-                    <input type="text" id="editUsername" name="editUsername" required>
+                    <input type="text" id="editUsername" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="editEmail">Email</label>
-                    <input type="email" id="editEmail" name="editEmail" required>
+                    <input type="email" id="editEmail" name="email" required>
                 </div>
                 <div class="modal-buttons">
                     <button type="submit" class="btn-submit">Save Changes</button>
@@ -302,23 +193,33 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('productModal')">&times;</span>
             <h2 id="productModalTitle">Add Product</h2>
-            <form>
+            <form id="productForm" method="POST" action="{{ route('products.store') }}">
+                @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label for="productName">Product Name</label>
-                    <input type="text" id="productName" name="productName" placeholder="Enter product name" required>
+                    <input type="text" id="productName" name="name" placeholder="Enter product name" required>
                 </div>
                 <div class="form-group">
                     <label for="productDescription">Description</label>
-                    <textarea id="productDescription" name="productDescription" rows="4" placeholder="Enter product description" required></textarea>
+                    <textarea id="productDescription" name="description" rows="4" placeholder="Enter product description" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="productPrice">Price ($)</label>
-                    <input type="number" id="productPrice" name="productPrice" step="0.01" placeholder="Enter price" required>
+                    <label for="productCategory">Category</label>
+                    <select id="productCategory" name="category_id" required>
+                        <option value="">Select a category</option>
+                        @foreach($categories ?? [] as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="productImage">Choose Image</label>
-                    <input type="file" id="productImage" name="productImage" accept="image/*">
-                    <small>Supported formats: JPG, PNG, GIF</small>
+                    <label for="productCostPrice">Cost Price ($)</label>
+                    <input type="number" id="productCostPrice" name="cost_price" step="0.01" placeholder="Enter cost price" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Unit Price ($)</label>
+                    <input type="number" id="productPrice" name="unit_price" step="0.01" placeholder="Enter selling price" required>
                 </div>
                 <div class="modal-buttons">
                     <button type="submit" class="btn-submit" id="productSubmitBtn">Add Product</button>
@@ -366,6 +267,11 @@
                 document.getElementById('editLastName').value = lastName;
                 document.getElementById('editUsername').value = username;
                 document.getElementById('editEmail').value = email;
+                
+                // Set form action to update route with the customer ID
+                const form = document.getElementById('editUserForm');
+                form.action = `/customers/${id}`;
+                
                 openModal('editUserModal');
             }
 
@@ -373,44 +279,73 @@
                 document.getElementById('historyName').textContent = name;
                 document.getElementById('historyPurchases').textContent = purchases;
                 document.getElementById('historyTotal').textContent = total.toFixed(2);
+
+                // Load REAL items via AJAX
+                fetch(`/customers/${id}/history`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const historyList = document.getElementById("historyItems");
+                        historyList.innerHTML = "";
+
+                        if (data.orders.length === 0) {
+                            historyList.innerHTML = "<li>No past purchases.</li>";
+                            return;
+                        }
+
+                        data.orders.forEach(order => {
+                            order.order_details.forEach(detail => {
+                                const li = document.createElement("li");
+                                li.textContent = `${detail.product.name} - $${detail.unit_price}`;
+                                historyList.appendChild(li);
+                            });
+                        });
+                    });
+
                 openModal('historyModal');
             }
 
             function openAddProductModal() {
                 document.getElementById('productModalTitle').textContent = 'Add Product';
                 document.getElementById('productSubmitBtn').textContent = 'Add Product';
-                document.getElementById('productName').value = '';
-                document.getElementById('productDescription').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productImage').value = '';
+
+                const form = document.getElementById('productForm');
+                form.action = '{{ route("products.store") }}';
+                form.method = 'POST'; // should ALWAYS be POST for store
+
+                form.reset();
+
+                // remove _method if exists
+                const methodInput = form.querySelector('input[name="_method"]');
+                if (methodInput) methodInput.remove();
+
                 openModal('productModal');
             }
 
-            function openEditProductModal(id, name, description, price) {
+            function openEditProductModal(id, name, description, price, costPrice, categoryId) {
                 document.getElementById('productModalTitle').textContent = 'Edit Product';
                 document.getElementById('productSubmitBtn').textContent = 'Update Product';
+
                 document.getElementById('productName').value = name;
                 document.getElementById('productDescription').value = description;
                 document.getElementById('productPrice').value = price;
+                document.getElementById('productCostPrice').value = costPrice;
+                document.getElementById('productCategory').value = categoryId;
+
+                const form = document.getElementById('productForm');
+                form.action = `/products/${id}`;
+                form.method = "POST"; // POST + method spoof
+
+                // add PUT method spoof
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    form.appendChild(methodInput);
+                }
+                methodInput.value = 'PUT';
+
                 openModal('productModal');
-            }
-
-            function deleteUser(id) {
-                document.getElementById('deleteType').textContent = 'user';
-                document.getElementById('confirmDeleteBtn').onclick = function() {
-                    alert('User ' + id + ' deleted successfully!');
-                    closeModal('deleteModal');
-                };
-                openModal('deleteModal');
-            }
-
-            function deleteProduct(id) {
-                document.getElementById('deleteType').textContent = 'product';
-                document.getElementById('confirmDeleteBtn').onclick = function() {
-                    alert('Product ' + id + ' deleted successfully!');
-                    closeModal('deleteModal');
-                };
-                openModal('deleteModal');
             }
 
             // Close modal when clicking outside

@@ -3,63 +3,74 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Inventory;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function confirm(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.name' => 'required|string',
+            'items.*.price' => 'required|numeric',
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $user = auth()->user();
+        $customerId = $user->customer->id; // your users are linked to customers
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        DB::beginTransaction();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
+        try {
+            // compute total
+            $total = array_sum(array_column($request->items, 'price'));
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
+            // create order
+            $order = Order::create([
+                'customer_id'   => $customerId,
+                'total_amount'  => $total,
+                'order_status'  => 'completed',
+                'payment_status' => 'paid',
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
+            // loop through items
+            foreach ($request->items as $item) {
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+                $product = Product::where('name', $item['name'])->first();
+
+                if (!$product) continue;
+
+                // save order detail
+                OrderDetail::create([
+                    'order_id'  => $order->id,
+                    'product_id' => $product->id,
+                    'quantity'  => 1, // your system doesn't track quantity per item yet
+                    'unit_price' => $product->unit_price,
+                    'subtotal'  => $product->unit_price,
+                ]);
+
+                // reduce inventory
+                $inventory = Inventory::where('product_id', $product->id)->first();
+
+                if ($inventory) {
+                    $inventory->stock_quantity = max(0, $inventory->stock_quantity - 1);
+                    $inventory->save();
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

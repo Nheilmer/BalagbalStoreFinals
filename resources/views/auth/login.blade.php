@@ -1,4 +1,4 @@
-@extends('app')
+@extends('app-guest')
 
 @section('title', 'Login - Balagbal Store')
 
@@ -28,17 +28,29 @@
                     <p>Sign in to your account</p>
                 </div>
 
-                <form action="#" method="POST" class="login-form">
+                <form action="{{ route('login') }}" method="POST" class="login-form">
                     @csrf
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+                        @error('email')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        @error('password')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
+
+                    @if($errors->has('message'))
+                        <div class="alert alert-error">
+                            {{ $errors->first('message') }}
+                        </div>
+                    @endif
 
                     <button type="submit" class="btn-login">Login</button>
                 </form>

@@ -23,7 +23,7 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->paragraph(),
-            'category_id' => $this->faker->numberBetween(1, 5),
+            'category_id' => $this->faker->numberBetween(1, 3),
             'cost_price' => $costPrice,
             'unit_price' => round($unitPrice, 2),
             'is_active' => $this->faker->boolean(85),

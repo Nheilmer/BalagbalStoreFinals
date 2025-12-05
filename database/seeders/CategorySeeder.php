@@ -13,6 +13,22 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory(5)->create();
+        Category::create([
+            'name' => 'Electronics',
+            'description' => 'Electronic devices and gadgets',
+            'is_active' => true,
+        ]);
+
+        Category::create([
+            'name' => 'Accessories',
+            'description' => 'Tech accessories and peripherals',
+            'is_active' => true,
+        ]);
+
+        Category::create([
+            'name' => 'Office',
+            'description' => 'Office equipment and supplies',
+            'is_active' => true,
+        ]);
     }
 }

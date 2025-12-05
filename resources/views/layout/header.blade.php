@@ -9,7 +9,6 @@
                 <li><a href="#">Products</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
-                <li><a href="/debug" class="btn-admin">Customers</a></li>
             </ul>
         </nav>
     </div>

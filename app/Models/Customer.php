@@ -10,24 +10,25 @@ class Customer extends Model
 {
     use HasFactory;
 
+    // 'username',
+    // 'email',
+    // 'password_hash',
     protected $fillable = [
-        'username',
-        'email',
-        'password_hash',
         'first_name',
         'last_name',
         'date_of_birth',
         'phone_number',
         'address',
+        'user_id',
     ];
 
+
     // Customer → User: Many customers belong to one user (M:1)
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Customer → Orders: One customer can have many orders (1:M)
     public function orders()
     {
         return $this->hasMany(Order::class);

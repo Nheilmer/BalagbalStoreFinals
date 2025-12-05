@@ -12,7 +12,14 @@
         <section class="stats-section">
             <div class="stats-header">
                 <h1>Dashboard</h1>
-                <button class="btn-profile" onclick="openProfileModal()">👤 Profile</button>
+                <div class="header-actions">
+                    <button class="btn-profile" onclick="openProfileModal()">👤 Profile</button>
+
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn-logout">🚪 Logout</button>
+                    </form>
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -52,94 +59,36 @@
                 <h2>Shop Products</h2>
                 <nav class="product-nav">
                     <button class="nav-btn active" onclick="filterProducts('all')">All Products</button>
-                    <button class="nav-btn" onclick="filterProducts('electronics')">Electronics</button>
-                    <button class="nav-btn" onclick="filterProducts('accessories')">Accessories</button>
-                    <button class="nav-btn" onclick="filterProducts('office')">Office</button>
+                    @foreach ($categories as $category)
+                        <button class="nav-btn"
+                                onclick="filterProducts('{{ $category->name }}')">
+                            {{ $category->name }}
+                        </button>
+                    @endforeach
                 </nav>
             </div>
 
             <div class="products-grid">
-                <!-- Product Cards -->
-                <div class="product-card">
-                    <div class="product-image">📷 4K Monitor</div>
-                    <div class="product-info">
-                        <h3>4K Monitor</h3>
-                        <p class="product-desc">27-inch, 4K resolution, 60Hz refresh rate</p>
-                        <p class="product-price">$399.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('4K Monitor', 399.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
+                @forelse ($products as $product)
+                    <div class="product-card" data-category="{{ $product->category->name }}">
+                        <div class="product-image">📷 {{ $product->name }}</div>
 
-                <div class="product-card">
-                    <div class="product-image">📷 Wireless Headphones</div>
-                    <div class="product-info">
-                        <h3>Wireless Headphones</h3>
-                        <p class="product-desc">High-quality sound with noise cancellation</p>
-                        <p class="product-price">$79.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Wireless Headphones', 79.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
+                        <div class="product-info">
+                            <h3>{{ $product->name }}</h3>
+                            <p class="product-desc">{{ $product->description }}</p>
+                            <p class="product-price">${{ number_format($product->unit_price, 2) }}</p>
 
-                <div class="product-card">
-                    <div class="product-image">📷 Mechanical Keyboard</div>
-                    <div class="product-info">
-                        <h3>Mechanical Keyboard</h3>
-                        <p class="product-desc">RGB backlit, mechanical switches, perfect for gaming</p>
-                        <p class="product-price">$149.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Mechanical Keyboard', 149.99)">🛒 Add to Cart</button>
+                            <button class="btn-add-cart"
+                                    onclick="addToCart('{{ $product->name }}', {{ $product->unit_price }})">
+                                🛒 Add to Cart
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">📷 Wireless Mouse</div>
-                    <div class="product-info">
-                        <h3>Wireless Mouse</h3>
-                        <p class="product-desc">Ergonomic design, 2.4GHz wireless, long battery life</p>
-                        <p class="product-price">$34.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Wireless Mouse', 34.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">📷 USB-C Cable</div>
-                    <div class="product-info">
-                        <h3>USB-C Cable</h3>
-                        <p class="product-desc">Durable charging cable, 6ft length</p>
-                        <p class="product-price">$12.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('USB-C Cable', 12.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">📷 Laptop Stand</div>
-                    <div class="product-info">
-                        <h3>Laptop Stand</h3>
-                        <p class="product-desc">Aluminum construction, adjustable height, portable</p>
-                        <p class="product-price">$45.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Laptop Stand', 45.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">📷 Webcam</div>
-                    <div class="product-info">
-                        <h3>Webcam</h3>
-                        <p class="product-desc">1080p HD, built-in microphone, auto focus</p>
-                        <p class="product-price">$59.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Webcam', 59.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">📷 Screen Protector</div>
-                    <div class="product-info">
-                        <h3>Screen Protector</h3>
-                        <p class="product-desc">Tempered glass, anti-glare, easy installation</p>
-                        <p class="product-price">$19.99</p>
-                        <button class="btn-add-cart" onclick="addToCart('Screen Protector', 19.99)">🛒 Add to Cart</button>
-                    </div>
-                </div>
+                @empty
+                    <p>No products available right now.</p>
+                @endforelse
             </div>
+
         </section>
     </div>
 
@@ -151,48 +100,99 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('profileModal')">&times;</span>
             <h2>User Profile</h2>
-            <form class="profile-form">
+            <form class="profile-form" action="{{ route('profile.update') }}" method="POST">
+                @csrf
+                @method('PUT')
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" value="john_doe" required>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username"
+                            value="{{ auth()->user()->username }}" 
+                            required
+                        >
                     </div>
+
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" value="john@example.com" required>
+                        <input 
+                            type="email" 
+                            id="email"
+                            name="email"
+                            value="{{ auth()->user()->email }}" 
+                            required
+                        >
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstname">First Name</label>
-                        <input type="text" id="firstname" value="John" required>
+                        <input 
+                            type="text" 
+                            id="firstname"
+                            name="firstname"
+                            value="{{ $user->customer->first_name }}" 
+                            required
+                        >
                     </div>
+
                     <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" id="lastname" value="Doe" required>
+                        <input 
+                            type="text" 
+                            id="lastname"
+                            name="lastname"
+                            value="{{ $user->customer->last_name }}" 
+                            required
+                        >
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" value="••••••••" required>
+                        <input 
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Leave blank to keep current password"
+                        >
                     </div>
+
                     <div class="form-group">
                         <label for="birthdate">Birth Date</label>
-                        <input type="date" id="birthdate" value="1990-05-15" required>
+                        <input 
+                            type="date"
+                            id="birthdate"
+                            name="birthdate"
+                            value="{{ $user->customer->date_of_birth }}">
+                        >
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="tel" id="phone" value="555-0101" required>
+                        <input 
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value="{{ $user->customer->phone_number }}"
+                        >
                     </div>
+
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" id="address" value="123 Main St, City" required>
+                        <input 
+                            type="text"
+                            id="address"
+                            name="address"
+                            value="{{ $user->customer->address }}"
+                        >
                     </div>
                 </div>
 
@@ -332,37 +332,65 @@
 
             // Confirm purchase
             function confirmBuy() {
-                const total = cartItems.reduce((sum, item) => sum + item.price, 0) * 1.1;
-                alert(
-                    `Purchase confirmed! Total: $${total.toFixed(
-                        2
-                    )}\n\nThank you for your order!`
-                );
-                cartItems = [];
-                closeModal("cartModal");
-                document.querySelector(".btn-buy-fixed").textContent = "🛒 Buy";
+                if (cartItems.length === 0) {
+                    alert("Cart is empty!");
+                    return;
+                }
+
+                fetch("/orders/confirm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    },
+                    body: JSON.stringify({
+                        items: cartItems
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Order placed successfully!");
+                        cartItems = [];
+                        updateCartButton();
+                        closeModal("cartModal");
+                    } else {
+                        alert("Something went wrong: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    alert("Error: " + err);
+                });
             }
 
             // Filter products
             function filterProducts(category) {
-                // Update active button
-                document.querySelectorAll(".nav-btn").forEach((btn) => {
-                    btn.classList.remove("active");
-                });
+                // highlight active button
+                document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
                 event.target.classList.add("active");
 
-                // Filter logic could be implemented here
-                console.log("Filtering by:", category);
+                const cards = document.querySelectorAll(".product-card");
+
+                cards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+
+                    if (category === "all" || cardCategory === category) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
             }
+
 
             // Save profile changes
             document.addEventListener("DOMContentLoaded", function () {
                 const profileForm = document.querySelector(".profile-form");
                 if (profileForm) {
                     profileForm.addEventListener("submit", function (e) {
-                        e.preventDefault();
-                        alert("Profile updated successfully!");
-                        closeModal("profileModal");
+                        // e.preventDefault();
+                        // alert("Profile updated successfully!");
+                        // closeModal("profileModal");
                     });
                 }
 
